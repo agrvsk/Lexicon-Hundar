@@ -1,3 +1,5 @@
+using Hundar.Web.Services;
+
 namespace Hundar.Web;
 
 public class Program
@@ -6,10 +8,21 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllersWithViews();
-        var app = builder.Build();
 
-        //app.MapGet("/", () => "Hello World!");
+        builder.Services.AddSingleton<BreedTypeService>();
+        builder.Services.AddSingleton<BreedService>();
+    //   builder.Services.AddScoped
+    //   builder.Services.AddTransient
+
+        var app = builder.Build();
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/error/exception");
+            app.UseStatusCodePagesWithRedirects("/error/http/{0}");
+        }
+
         app.MapControllers();
+        app.UseStaticFiles();
         app.Run();
     }
 }
